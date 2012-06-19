@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -24,6 +25,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	//set default path to database
 	private static String DB_PATH = "/data/data/com.yeyaxi.MetroCentreStaffDiscount/databases/";
 	private static String DB_NAME = "metro_staff_discount.sqlite";
+	private static final String DB_TABLE_NAME = "discount_info";
+	private static final String DB_COLUMN_NAME = "ShopName";
 	private SQLiteDatabase myDataBase;
 	private final Context myContext;
 
@@ -139,6 +142,22 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     	    super.close();
  
 	}
+    /**
+     * getShopInfo
+     * @param name
+     * @return shopInfo
+     */
+    public Merchant getShopInfo(String name) {
+    	SQLiteDatabase db = this.getReadableDatabase();
+    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName LIKE " + "'%" + name + "%'", null, null, null, null);
+		if (cursor != null)
+			cursor.moveToFirst();
+		
+		Merchant shopInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
+		
+    	return shopInfo;
+    	
+    }
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
