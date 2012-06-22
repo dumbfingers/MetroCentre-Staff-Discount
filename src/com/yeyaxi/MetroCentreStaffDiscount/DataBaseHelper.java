@@ -25,7 +25,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	//set default path to database
 	private static String DB_PATH = "/data/data/com.yeyaxi.MetroCentreStaffDiscount/databases/";
 	private static String DB_NAME = "metro_staff_discount.sqlite";
-	private static final String DB_TABLE_NAME = "discount_info";
+	private static final String DB_TABLE_NAME = "fts_discount_info";
 	private static final String DB_COLUMN_NAME = "ShopName";
 	private SQLiteDatabase myDataBase;
 	private final Context myContext;
@@ -149,7 +149,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
      */
     public Merchant getShopInfo(String name) {
     	SQLiteDatabase db = this.getReadableDatabase();
-    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName LIKE " + "'%" + name + "%'", null, null, null, null);
+    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName MATCH " + "'" + name + "'", null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
 		

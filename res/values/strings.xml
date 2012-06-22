@@ -3,5 +3,5 @@
 
     <string name="hello">Hello World, MetroCentreStaffDiscountActivity!</string>
     <string name="app_name">MetroCentre Staff Discount</string>
-
+	<string name="menu_search">Search</string>
 </resources>

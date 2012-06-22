@@ -3,8 +3,13 @@ package com.yeyaxi.MetroCentreStaffDiscount;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.widget.SearchView;
 
 public class MetroCentreStaffDiscountActivity extends Activity {
 	private DataBaseHelper mDataBase;
@@ -26,5 +31,22 @@ public class MetroCentreStaffDiscountActivity extends Activity {
         Log.d("Query Test:", result);
     }
     
+    @Override
+    /**
+     * Create Action Bar Search Widget
+     */
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the options menu from XML
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        return true;
+    }
  
 }
