@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,6 +14,8 @@ import android.widget.SearchView;
 
 public class MetroCentreStaffDiscountActivity extends Activity {
 	private DataBaseHelper mDataBase;
+	private Merchant shop;
+	private String result;
 
     /** Called when the activity is first created. */
     @Override
@@ -26,11 +29,34 @@ public class MetroCentreStaffDiscountActivity extends Activity {
 			throw new Error("Unable to create database");
 		}
         setContentView(R.layout.main);
-        Merchant shop = mDataBase.getShopInfo("cafe");
-        String result = shop.getShopName() + shop.getDiscount() + shop.getNote();
-        Log.d("Query Test:", result);
+//        Merchant shop = mDataBase.getShopInfo("cafe");
+//        String result = shop.getShopName() + shop.getDiscount() + shop.getNote();
+//        Log.d("Query Test:", result);
+        handleIntent(getIntent());
+        Log.d("Query Test: ", result);
     }
     
+    /**
+     * handleIntent
+     * @param intent
+     */
+    private void handleIntent (Intent intent) {
+    	if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+    		String query = intent.getStringExtra(SearchManager.QUERY);
+    		doQuery(query);
+    	}
+    }
+    
+    /**
+     * doQuery
+     * @param query
+     * @return Query Results
+     */
+    private String doQuery(String query){
+		shop = mDataBase.getShopInfo(query);
+    	result = shop.getShopName() + shop.getDiscount() + shop.getNote();    	
+    	return result;
+    }
     @Override
     /**
      * Create Action Bar Search Widget
