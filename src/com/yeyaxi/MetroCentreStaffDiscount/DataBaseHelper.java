@@ -143,7 +143,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
  
 	}
     
-    // TODO When query like "mc" instead of McDonald it will lead to a crash. NEED to FIX IT within the method below.
     /**
      * getShopInfo
      * @param name
@@ -151,19 +150,23 @@ public class DataBaseHelper extends SQLiteOpenHelper{
      */
     public Merchant getShopInfo(String name) {
     	SQLiteDatabase db = this.getReadableDatabase();
-    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName MATCH " + "'" + name + "'", null, null, null, null);
-		if (cursor != null) {
-			cursor.moveToFirst();
-		
-		Merchant shopInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
-		
-    	return shopInfo;
-		
-		}else{
-			return new Merchant("Shop Not Found",0.0,"");
-		}
-		
     	
+    	// Database query: SELECT * FROM fts_discount_info WHERE ShopName MATCH 'name OR *name OR name*';
+    	
+    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName MATCH " + "'" + name + " OR " + "*" + name + " OR " + name + "*'", null, null, null, null);
+
+    	if(cursor.moveToFirst()) {
+
+    		Merchant shopInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
+
+    		return shopInfo;
+
+    	}else{
+    		// If neither FTS nor MATCH * search return a valid result, return Shop not found.
+    		return new Merchant("Shop Not Found",0.0,"");
+
+    	}
+
     }
 
 	@Override
