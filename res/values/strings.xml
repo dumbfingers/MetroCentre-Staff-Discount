@@ -4,4 +4,6 @@
     <string name="hello">Hello World, MetroCentreStaffDiscountActivity!</string>
     <string name="app_name">MetroCentre Staff Discount</string>
 	<string name="menu_search">Search</string>
+	<string name="search_hint">Search for the Discounts</string>
+	<string name="search_label">Shop</string>
 </resources>
