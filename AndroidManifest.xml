@@ -22,6 +22,7 @@
             
             
         </activity><meta-data android:name="android.app.default_searchable" android:value=".MetroCentreStaffDiscountActivity"/>
+        <activity android:name="ShopInfoActivity"></activity>
     </application>
 
 </manifest>

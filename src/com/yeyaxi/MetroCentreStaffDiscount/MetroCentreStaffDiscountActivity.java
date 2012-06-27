@@ -7,19 +7,29 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class MetroCentreStaffDiscountActivity extends Activity {
 	private DataBaseHelper mDataBase;
 	private Merchant shop;
 	private ArrayList<Comparable> result = new ArrayList<Comparable>();
-	private TextView mShopName;
-	private TextView mShopInfo;
+	private ListAdapter adapter;
+	private ListView mListView;
+	private Cursor cursor;
+	
 
     /** Called when the activity is first created. */
     @Override
@@ -29,13 +39,14 @@ public class MetroCentreStaffDiscountActivity extends Activity {
         try {
 			mDataBase.createDataBase();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			throw new Error("Unable to create database");
 		}
-        setContentView(R.layout.result);
-        
-        mShopName = (TextView) findViewById(R.id.shopname);
-        mShopInfo = (TextView) findViewById(R.id.shopinfo);
+        setContentView(R.layout.main);
+                
+//        mShopName = (TextView) findViewById(R.id.shopname);
+//        mShopInfo = (TextView) findViewById(R.id.shopinfo);
+        mListView = (ListView)findViewById(R.id.resultListView);
+        handleIntent(getIntent());
 
     }
     
@@ -57,15 +68,33 @@ public class MetroCentreStaffDiscountActivity extends Activity {
     		String query = intent.getStringExtra(SearchManager.QUERY);
     		doQuery(query);
     		// Get Shop Name from result
-    		mShopName.setText((String)result.get(0));
+//    		mShopName.setText((String)result.get(0));
     		
     		// Get Discount Info
     		//mShopInfo.setText(result[1]);
     		
     		// Get Note Info
-    		mShopInfo.setText((String)result.get(2));
+//    		mShopInfo.setText((String)result.get(2));
+    		
+            adapter = new SimpleCursorAdapter(this, R.layout.result, cursor, mDataBase.getDBColumnNames(), new int[]{R.id.shopname, R.id.shopinfo} );
+            mListView.setAdapter(adapter);
+            mListView.setOnItemClickListener(new OnItemClickListener() {
+            	
+            	public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+//					Bundle bundle = new Bundle();
+//					bundle.putInt("position", position);
+//					bundle.putLong("id", id);
+            		Intent shopIntent = new Intent(getApplicationContext(), ShopInfoActivity.class);
+            		startActivity(shopIntent);
+				}
+            	
+            });
+            
     	}
     }
+    
+    
     
     /**
      * Do database query
@@ -73,7 +102,7 @@ public class MetroCentreStaffDiscountActivity extends Activity {
      * @return Query Results
      */
     private ArrayList<Comparable> doQuery(String query){
-		shop = mDataBase.getShopInfo(query);
+		shop = getShopInfo(query);
 		result.add(0, shop.getShopName());
 		//String doubleValue = new DecimalFormat().format(shop.getDiscount() * 10);
     	result.add(1, shop.getDiscount());
@@ -81,6 +110,36 @@ public class MetroCentreStaffDiscountActivity extends Activity {
 //        Log.d("Query Test: ", result);
     	return result;
     }
+    
+    /**
+     * Get Shop Info from Database
+     * @param shopname
+     * @return packed shop info
+     */
+    private Merchant getShopInfo(String shopname) {
+    	
+		SQLiteDatabase db = mDataBase.getReadableDatabase();
+    	
+		cursor = db.query(mDataBase.getDBTableName(), null, "ShopName MATCH " + "'" + shopname + " OR " + "*" + shopname + " OR " + shopname + "*'", null, null, null, null);
+    	
+    	if(cursor.moveToFirst()) {
+    		
+    		Merchant shopQueryInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
+ 
+    		return shopQueryInfo;
+    	
+    	}else{
+    		
+    		// If neither FTS nor MATCH * search return a valid result, return Shop not found.
+    		// But this "Shop Not Found" info will not be displayed because the value is passed via cursor,
+    		// not merchant anymore.
+    		Merchant nullShop = new Merchant("Shop Not Found",0.0,"");
+    		return nullShop;
+    		
+    	}
+    	
+    }
+    
     @Override
     /**
      * Create Action Bar Search Widget
@@ -99,6 +158,7 @@ public class MetroCentreStaffDiscountActivity extends Activity {
         searchView.setQueryRefinementEnabled(true);
         return true;
     }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -109,6 +169,8 @@ public class MetroCentreStaffDiscountActivity extends Activity {
                 return false;
         }
     }
+    
+    
     
 
  

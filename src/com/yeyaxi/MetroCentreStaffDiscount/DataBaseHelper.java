@@ -26,7 +26,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	private static String DB_PATH = "/data/data/com.yeyaxi.MetroCentreStaffDiscount/databases/";
 	private static String DB_NAME = "metro_staff_discount.sqlite";
 	private static final String DB_TABLE_NAME = "fts_discount_info";
-	private static final String DB_COLUMN_NAME = "ShopName";
+	// Only display shop name and shop info, the discount value is for other purposes.
+	private static final String[] DB_COLUMN_NAME = {"ShopName", "Note"};
 	private SQLiteDatabase myDataBase;
 	private final Context myContext;
 
@@ -143,30 +144,39 @@ public class DataBaseHelper extends SQLiteOpenHelper{
  
 	}
     
-    /**
-     * getShopInfo
-     * @param name
-     * @return shopInfo
-     */
-    public Merchant getShopInfo(String name) {
-    	SQLiteDatabase db = this.getReadableDatabase();
+//    /**
+//     * getShopInfo
+//     * @param name
+//     * @return shopInfo
+//     */
+//    public Merchant getShopInfo(String name) {
+//    	SQLiteDatabase db = this.getReadableDatabase();
+//    	
+//    	// Database query: SELECT * FROM fts_discount_info WHERE ShopName MATCH 'name OR *name OR name*';
+//    	
+//    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName MATCH " + "'" + name + " OR " + "*" + name + " OR " + name + "*'", null, null, null, null);
+//
+//    	if(cursor.moveToFirst()) {
+//
+//    		Merchant shopInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
+//
+//    		return shopInfo;
+//
+//    	}else{
+//    		// If neither FTS nor MATCH * search return a valid result, return Shop not found.
+//    		return new Merchant("Shop Not Found",0.0,"");
+//
+//    	}
+//
+//    }
+    
+    public String getDBTableName() {
+    	return DB_TABLE_NAME;
+    }
+    
+    public String[] getDBColumnNames() {
     	
-    	// Database query: SELECT * FROM fts_discount_info WHERE ShopName MATCH 'name OR *name OR name*';
-    	
-    	Cursor cursor = db.query(DB_TABLE_NAME, null, "ShopName MATCH " + "'" + name + " OR " + "*" + name + " OR " + name + "*'", null, null, null, null);
-
-    	if(cursor.moveToFirst()) {
-
-    		Merchant shopInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
-
-    		return shopInfo;
-
-    	}else{
-    		// If neither FTS nor MATCH * search return a valid result, return Shop not found.
-    		return new Merchant("Shop Not Found",0.0,"");
-
-    	}
-
+    	return DB_COLUMN_NAME;
     }
 
 	@Override
