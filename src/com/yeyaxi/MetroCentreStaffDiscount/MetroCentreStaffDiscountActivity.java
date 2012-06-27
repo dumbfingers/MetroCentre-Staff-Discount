@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -63,7 +64,8 @@ public class MetroCentreStaffDiscountActivity extends Activity {
      * handle intent
      * @param intent
      */
-    private void handleIntent (Intent intent) {
+    @SuppressWarnings("deprecation")
+	private void handleIntent (Intent intent) {
     	if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
     		String query = intent.getStringExtra(SearchManager.QUERY);
     		doQuery(query);
@@ -82,10 +84,14 @@ public class MetroCentreStaffDiscountActivity extends Activity {
             	
             	public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
-//					Bundle bundle = new Bundle();
 //					bundle.putInt("position", position);
 //					bundle.putLong("id", id);
+            		Cursor c = (Cursor) parent.getItemAtPosition(position);
             		Intent shopIntent = new Intent(getApplicationContext(), ShopInfoActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putString("shopname", c.getString(1));
+					bundle.putString("note", c.getString(3));
+            		shopIntent.putExtra("info", bundle);
             		startActivity(shopIntent);
 				}
             	

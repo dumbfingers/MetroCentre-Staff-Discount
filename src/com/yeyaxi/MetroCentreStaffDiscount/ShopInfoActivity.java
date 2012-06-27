@@ -1,6 +1,8 @@
 package com.yeyaxi.MetroCentreStaffDiscount;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -16,6 +18,14 @@ public class ShopInfoActivity extends Activity{
 		
 		mShopName = (TextView)findViewById(R.id.shopname);
 		mShopInfo = (TextView)findViewById(R.id.shopinfo);
+		
+		Intent intent = getIntent();
+		Bundle bundle = intent.getBundleExtra("info");
+//		Cursor c = (Cursor)bundle.getParcelable("cursor");
+		
+		mShopName.setText(bundle.getString("shopname"));
+		mShopInfo.setText(bundle.getString("note"));
+		
 	}
 
 }

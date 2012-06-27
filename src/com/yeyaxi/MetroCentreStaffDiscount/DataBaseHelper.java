@@ -11,6 +11,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 /**
  * Database Helper
  * 
@@ -30,6 +31,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	private static final String[] DB_COLUMN_NAME = {"ShopName", "Note"};
 	private SQLiteDatabase myDataBase;
 	private final Context myContext;
+	private static final int DB_VERSION = 2;
+	private static final String TAG = "Database";
 
 	/**
 	 * Constructor
@@ -37,7 +40,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	 * @param context
 	 */
 	public DataBaseHelper(Context context) {
-		super(context, DB_NAME, null, 1);
+		super(context, DB_NAME, null, DB_VERSION);
 		this.myContext = context;
 		// TODO Auto-generated constructor stub
 	}
@@ -187,7 +190,23 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
+		
+		newVersion = DB_VERSION;
+		
+		if (newVersion > oldVersion) {
+			
+			try {
+				
+				Log.d(TAG, "Upgrading Database...");
+				copyDataBase();
+				Log.d(TAG, "Database Updated.");
+				
+			} catch (IOException e) {
+				
+				Log.e(TAG, "Database copy error.");
+				
+			}
+		}
 		
 	}
 
