@@ -3,6 +3,10 @@ package com.yeyaxi.MetroCentreStaffDiscount;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -17,19 +21,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
+/**
+ * This is a simple app that could help the staff card holder to quickly find out the discount info.
+ * @author Yaxi Ye
+ * @version 1
+ * @since Jun, 2012
+ *
+ */
 public class MetroCentreStaffDiscountActivity extends Activity {
+	
 	private DataBaseHelper mDataBase;
 	private Merchant shop;
 	private ArrayList<Comparable> result = new ArrayList<Comparable>();
 	private ListAdapter adapter;
 	private ListView mListView;
 	private Cursor cursor;
+	private AdView adView;
 	
 
     /** Called when the activity is first created. */
@@ -48,7 +61,28 @@ public class MetroCentreStaffDiscountActivity extends Activity {
 //        mShopInfo = (TextView) findViewById(R.id.shopinfo);
         mListView = (ListView)findViewById(R.id.resultListView);
         handleIntent(getIntent());
+        
+        // Create the adView
+        adView = new AdView(this, AdSize.BANNER, Constants.MY_AD_UNIT_ID);
 
+        // Lookup your LinearLayout assuming it’s been given
+        // the attribute android:id="@+id/mainLayout"
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
+
+        // Add the adView to it
+        layout.addView(adView);
+
+        // Initiate a generic request to load it with an ad
+        adView.loadAd(new AdRequest());
+
+    }
+    
+    @Override
+    public void onDestroy() {
+    	if (adView != null) {
+    		adView.destroy();
+    	}
+    	super.onDestroy();
     }
     
     @Override
@@ -130,6 +164,7 @@ public class MetroCentreStaffDiscountActivity extends Activity {
     	
     	if(cursor.moveToFirst()) {
     		
+    		//cursor has info at index: 0, _id; 1, shopname; 2, discount; 3, note;
     		Merchant shopQueryInfo = new Merchant(cursor.getString(1), cursor.getDouble(2), cursor.getString(3));
  
     		return shopQueryInfo;

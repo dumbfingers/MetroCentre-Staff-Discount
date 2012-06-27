@@ -13,11 +13,11 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 /**
- * Database Helper
+ * Database handler
  * 
  * @author Yaxi Ye
  * 
- * Reference: Using your own SQLite database in Android applications 
+ * @see Reference: Using your own SQLite database in Android applications 
  * (Link: http://www.reigndesign.com/blog/using-your-own-sqlite-database-in-android-applications/)
  *
  */
