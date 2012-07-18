@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, MetroCentreStaffDiscountActivity!</string>
+    <string name="tipGB">Hello, please press MENU button on your device to pop up search options!</string>
     <string name="app_name">MetroCentre Staff Discount</string>
 	<string name="menu_search">Search</string>
 	<string name="search_hint">Search for the Discounts</string>
 	<string name="search_label">Shop</string>
+	<string name="tipICS">Hello, please touch the above SEARCH ICON to perform a search!</string>
 </resources>

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Menu;
@@ -30,7 +31,7 @@ import android.widget.TextView;
 /**
  * This is a simple app that could help the staff card holder to quickly find out the discount info.
  * @author Yaxi Ye
- * @version 1
+ * @version 1.1
  * @since Jun, 2012
  *
  */
@@ -43,6 +44,7 @@ public class MetroCentreStaffDiscountActivity extends Activity {
 	private ListView mListView;
 	private Cursor cursor;
 	private AdView adView;
+	private TextView tipView;
 	
 
     /** Called when the activity is first created. */
@@ -60,6 +62,10 @@ public class MetroCentreStaffDiscountActivity extends Activity {
 //        mShopName = (TextView) findViewById(R.id.shopname);
 //        mShopInfo = (TextView) findViewById(R.id.shopinfo);
         mListView = (ListView)findViewById(R.id.resultListView);
+        tipView = (TextView)findViewById(R.id.tips);
+        
+  
+        
         handleIntent(getIntent());
         
         // Create the adView
@@ -74,6 +80,24 @@ public class MetroCentreStaffDiscountActivity extends Activity {
 
         // Initiate a generic request to load it with an ad
         adView.loadAd(new AdRequest());
+
+    }
+    
+    public void onStart() {
+    	
+    	super.onStart();
+    	
+      	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	tipView.setText(R.string.tipICS);
+        }else{
+        	tipView.setText(R.string.tipGB);
+        }
+    }
+    
+    public void onResume() {
+    	
+    	super.onResume();
+//    	tipView.setText("");
 
     }
     
@@ -111,6 +135,9 @@ public class MetroCentreStaffDiscountActivity extends Activity {
     		
     		// Get Note Info
 //    		mShopInfo.setText((String)result.get(2));
+    		
+    		// Get rid of the tips
+    		tipView.setText("");
     		
             adapter = new SimpleCursorAdapter(this, R.layout.result, cursor, mDataBase.getDBColumnNames(), new int[]{R.id.shopname, R.id.shopinfo} );
             mListView.setAdapter(adapter);
@@ -189,14 +216,17 @@ public class MetroCentreStaffDiscountActivity extends Activity {
         // Inflate the options menu from XML
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
-
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-//        searchView.setSubmitButtonEnabled(true);
-        searchView.setQueryRefinementEnabled(true);
+        
+        // Add support for Gingerbread (SDK ver 9)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	// Get the SearchView and set the searchable configuration
+        	SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        	SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        	searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        	searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        	//searchView.setSubmitButtonEnabled(true);
+        	searchView.setQueryRefinementEnabled(true);
+        }
         return true;
     }
     
