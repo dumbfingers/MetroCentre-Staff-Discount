@@ -31,7 +31,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	private static final String[] DB_COLUMN_NAME = {"ShopName", "Note"};
 	private SQLiteDatabase myDataBase;
 	private final Context myContext;
-	private static final int DB_VERSION = 2;
+	private static final int DB_VERSION = 3;
 	private static final String TAG = "Database";
 
 	/**
